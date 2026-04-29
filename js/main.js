@@ -118,7 +118,10 @@
         // It centralizes error handling and keeps UI logic (renderUI) separate from network logic (fetchData).
         try {
             const products = await fetchData(jsonPath);
-            renderUI(products);
+            // save master copy so searches always operate on full list
+            originalProducts = Array.isArray(products) ? products.slice() : [];
+            // render initial UI from full list
+            renderUI(originalProducts);
             return products;
         } catch (err) {
             // Bubble up error after attempting to show a simple error UI
@@ -147,37 +150,35 @@
     
     /**
      * renderUI
-     * - Renders an array of product objects into the container with id="product-container".
-     * - Each product is expected to have at least: id, name, price, image_url (per your requested JSON).
-     *
-     * @param {Array} products
+     * - now renders given products but DOES NOT overwrite the master originalProducts
      */
     function renderUI(products) {
-        const container = document.getElementById('product-container');
+        // keep a copy of what we're currently rendering (optional)
+        allProducts = Array.isArray(products) ? products.slice() : [];
+
+        const container = document.getElementById('product-container') ||
+            document.querySelector('.col-lg-9 .row.pb-3');
+
         if (!container) {
-            console.error('renderUI: #product-container element not found.');
+            console.error('renderUI: no product container found.');
             return;
         }
-    
-        // Clear previous content
+
+        // Clear existing product columns
         container.innerHTML = '';
-    
-        // If products is empty or not an array, show a friendly message
+
         if (!Array.isArray(products) || products.length === 0) {
             container.innerHTML = '<div class="col-12"><p class="text-muted">No products available.</p></div>';
             return;
         }
-    
-        // Build DOM nodes for each product and append to the container
+
         products.forEach(p => {
-            const col = document.createElement('div');
-            col.className = 'col-lg-4 col-md-6 col-sm-12 pb-1';
-    
-            // Use escapeHtml for user-controlled strings
-            const imgSrc = escapeHtml(p.image_url || p.image || '');
+            const imgSrc = escapeHtml(p.image_url || p.image || 'img/product-1.jpg');
             const name = escapeHtml(p.name || 'Unnamed product');
             const price = (typeof p.price === 'number' || !isNaN(Number(p.price))) ? Number(p.price).toFixed(2) : '';
-    
+            const col = document.createElement('div');
+            col.className = 'col-lg-4 col-md-6 col-sm-12 pb-1';
+
             col.innerHTML = `
                 <div class="card product-item border-0 mb-4">
                     <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
@@ -223,13 +224,184 @@
       }
     }
     
+    // store loaded products for filtering (master copy)
+    let originalProducts = [];
+    // current rendered set (optional)
+    let allProducts = [];
+
+    /**
+     * requestProducts
+     * - High-level function that orchestrates the product loading sequence.
+     */
+    async function requestProducts(jsonPath = 'data/products.json') {
+        try {
+            const products = await fetchData(jsonPath);
+            // save master copy so searches always operate on full list
+            originalProducts = Array.isArray(products) ? products.slice() : [];
+            // render initial UI from full list
+            renderUI(originalProducts);
+            return products;
+        } catch (err) {
+            renderError('Failed to load products. Please try again later.');
+            throw err;
+        }
+    }
+
+    /**
+     * renderUI
+     * - now renders given products but DOES NOT overwrite the master originalProducts
+     */
+    function renderUI(products) {
+        // keep a copy of what we're currently rendering (optional)
+        allProducts = Array.isArray(products) ? products.slice() : [];
+
+        const container = document.getElementById('product-container') ||
+            document.querySelector('.col-lg-9 .row.pb-3');
+
+        if (!container) {
+            console.error('renderUI: no product container found.');
+            return;
+        }
+
+        // Clear existing product columns
+        container.innerHTML = '';
+
+        if (!Array.isArray(products) || products.length === 0) {
+            container.innerHTML = '<div class="col-12"><p class="text-muted">No products available.</p></div>';
+            return;
+        }
+
+        products.forEach(p => {
+            const imgSrc = escapeHtml(p.image_url || p.image || 'img/product-1.jpg');
+            const name = escapeHtml(p.name || 'Unnamed product');
+            const price = (typeof p.price === 'number' || !isNaN(Number(p.price))) ? Number(p.price).toFixed(2) : '';
+            const col = document.createElement('div');
+            col.className = 'col-lg-4 col-md-6 col-sm-12 pb-1';
+
+            col.innerHTML = `
+                <div class="card product-item border-0 mb-4">
+                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                        <img class="img-fluid w-100" src="${imgSrc}" alt="${name}">
+                    </div>
+                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                        <h6 class="text-truncate mb-3">${name}</h6>
+                        <div class="d-flex justify-content-center">
+                            <h6>$${price}</h6>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between bg-light border">
+                        <a href="#" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                        <a href="#" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                    </div>
+                </div>
+            `;
+            container.appendChild(col);
+        });
+    }
+
+    /**
+     * filterProducts(searchTerm, category)
+     * - Use originalProducts (full list) as the source so repeated searches work correctly.
+     */
+    function filterProducts(searchTerm, category) {
+        const term = (searchTerm || '').trim().toLowerCase();
+        const cat = (category || 'All').trim().toLowerCase();
+
+        if (!Array.isArray(originalProducts)) return [];
+
+        return originalProducts.filter(product => {
+            if (!product || typeof product.name !== 'string') return false;
+            const nameMatches = term === '' || product.name.toLowerCase().includes(term);
+            const categoryMatches = cat === 'all' ||
+                (typeof product.category === 'string' && product.category.toLowerCase() === cat);
+            return nameMatches && categoryMatches;
+        });
+    }
+
+    /**
+     * setupSearchAndFilters
+     * - Wire search input, button and category list to call filterProducts() and re-render results.
+     * - Add debug logs to help find why search returns no results.
+     */
+    function setupSearchAndFilters() {
+        const searchInput = document.getElementById('product-search');
+        const searchBtn = document.getElementById('product-search-btn');
+        const categoryList = document.getElementById('category-list');
+
+        if (!categoryList) {
+            console.warn('setupSearchAndFilters: #category-list not found in DOM');
+        }
+        if (!searchInput) {
+            console.warn('setupSearchAndFilters: #product-search not found in DOM');
+        }
+
+        function doFilter() {
+            const term = searchInput ? searchInput.value : '';
+            let cat = 'All';
+            if (categoryList) {
+                const active = categoryList.querySelector('.active[data-category]');
+                if (active) cat = active.getAttribute('data-category') || (active.textContent || 'All').trim();
+            }
+
+            // Debug: show what we're filtering against and how many source items exist
+            console.debug('Filtering products — term:', term, 'category:', cat, 'originalProducts.length:', originalProducts.length);
+
+            const results = filterProducts(term, cat);
+
+            console.debug('Filter results length:', results.length, results.slice(0,3)); // preview up to 3 items
+            renderUI(results);
+        }
+
+        if (searchInput) {
+            // update on keyup and on Enter
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    doFilter();
+                } else {
+                    doFilter();
+                }
+            });
+        }
+        if (searchBtn) {
+            searchBtn.addEventListener('click', (e) => { e.preventDefault(); doFilter(); });
+        }
+
+        if (categoryList) {
+            // Use event delegation and robust target resolution
+            categoryList.addEventListener('click', (e) => {
+                let target = e.target;
+                const item = target.closest('[data-category]') || target.closest('a') || target.closest('.list-group-item');
+                if (!item) return;
+
+                e.preventDefault();
+
+                const cat = (item.getAttribute && item.getAttribute('data-category')) ||
+                            (item.dataset && item.dataset.category) ||
+                            (item.textContent || '').trim() || 'All';
+
+                categoryList.querySelectorAll('[data-category], .list-group-item').forEach(el => el.classList.remove('active'));
+                item.classList.add('active');
+
+                console.debug('Category clicked:', cat);
+
+                const term = searchInput ? searchInput.value : '';
+                const results = filterProducts(term, cat);
+                console.debug('After category click - results length:', results.length);
+                renderUI(results);
+            });
+        }
+    }
+
     // Automatically request products when the DOM is ready.
-    // This matches the common UI flow: page loads -> requestProducts -> fetchData -> renderUI
     document.addEventListener('DOMContentLoaded', () => {
-        // If you want to call requestProducts from other places (e.g. on-demand refresh), call this function directly.
-        requestProducts('data/products.json').catch(err => {
-            // Error already rendered by requestProducts/renderError; still log for debugging.
+        console.debug('DOMContentLoaded - starting product request');
+        requestProducts('data/products.json').then(() => {
+            console.debug('Products loaded, originalProducts.length =', originalProducts.length, 'first item:', originalProducts[0] || null);
+        }).catch(err => {
             console.error('requestProducts failed:', err);
+        }).finally(() => {
+            // set up search/category handlers even if load failed
+            setupSearchAndFilters();
         });
     });
     
