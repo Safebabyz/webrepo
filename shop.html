@@ -65,27 +65,29 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
-                                <i class="fa fa-search"></i>
-                            </span>
-                        </div>
-                    </div>
-                </form>
+               <form action="shop.html" method="GET"> <!-- ระบุให้ส่งค่าไปที่หน้า shop.html -->
+    <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Search for products">
+        <div class="input-group-append">
+            <!-- เปลี่ยนจาก span เป็น button เพื่อให้คลิกได้ -->
+            <button type="submit" class="input-group-text bg-transparent text-primary" style="border: 1px solid #ced4da; border-left: none;">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+</form>
             </div>
-            <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
-                    <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-                <a href="" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-            </div>
+          <div class="col-lg-3 col-6 text-right">
+    <a href="" class="btn border">
+        <i class="fas fa-heart text-primary"></i>
+        <span class="badge">0</span>
+    </a>
+    <a href="cart.html" class="btn border">
+        <i class="fas fa-shopping-cart text-primary"></i>
+        <!-- ตรวจสอบว่ามีคลาส badge อยู่ตรงนี้[cite: 1, 4, 8] -->
+        <span class="badge" id="cart-badge">0</span> 
+    </a>
+</div>
         </div>
     </div>
     <!-- Topbar End -->
@@ -121,6 +123,7 @@
                     </div>
                 </nav>
             </div>
+    
             <div class="col-lg-9">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
                     <a href="" class="text-decoration-none d-block d-lg-none">
@@ -171,7 +174,7 @@
                 <div class="bg-light p-3">
                     <!-- Search input with icon button -->
                     <div class="input-group">
-                        <input id="product-search" type="text" class="form-control" placeholder="Search products..." aria-label="Search products">
+<input id="product-search" type="text" class="form-control" placeholder="Search products..." aria-label="Search products">
                         <div class="input-group-append">
                             <button id="product-search-btn" class="btn btn-primary" type="button" aria-label="Search">
                                 <i class="fa fa-search"></i>
@@ -227,7 +230,7 @@
                                 <img class="img-fluid w-100" src="img/product-1.jpg" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                                <h6 class="text-truncate mb-3">Colorful Woman Shirt</h6>
                                 <div class="d-flex justify-content-center">
                                     <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
                                 </div>
@@ -295,7 +298,7 @@
                                 <img class="img-fluid w-100" src="img/product-5.jpg" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                                <h6 class="text-truncate mb-3">Stylish Shirt</h6>
                                 <div class="d-flex justify-content-center">
                                     <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
                                 </div>
@@ -312,7 +315,7 @@
                                 <img class="img-fluid w-100" src="img/product-6.jpg" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                                <h6 class="text-truncate mb-3">OP Shirt</h6>
                                 <div class="d-flex justify-content-center">
                                     <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
                                 </div>
@@ -329,7 +332,7 @@
                                 <img class="img-fluid w-100" src="img/product-7.jpg" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                                <h6 class="text-truncate mb-3">Local Shirt</h6>
                                 <div class="d-flex justify-content-center">
                                     <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
                                 </div>
@@ -346,7 +349,7 @@
                                 <img class="img-fluid w-100" src="img/product-8.jpg" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                                <h6 class="text-truncate mb-3">Colorful Test Shirt</h6>
                                 <div class="d-flex justify-content-center">
                                     <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
                                 </div>
@@ -363,7 +366,7 @@
                                 <img class="img-fluid w-100" src="img/product-1.jpg" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                                <h6 class="text-truncate mb-3"> Stylish Shirt</h6>
                                 <div class="d-flex justify-content-center">
                                     <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
                                 </div>
@@ -472,6 +475,11 @@
             </div>
         </div>
     </div>
+    <div class="list-group" id="category-list">
+    <a href="#" class="list-group-item list-group-item-action active" data-category="All">All</a>
+    <a href="#" class="list-group-item list-group-item-action" data-category="Shirts">Shirts</a>
+    <a href="#" class="list-group-item list-group-item-action" data-category="Jackets">Jackets</a>
+</div>
     <!-- Footer End -->
 
 
@@ -487,6 +495,86 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('product-search'); 
+    const searchButton = document.getElementById('product-search-btn'); 
+    const products = document.querySelectorAll('.product-item'); 
+
+    function performSearch() {
+        const filter = searchInput.value.toLowerCase().trim(); // เพิ่ม .trim() เพื่อตัดช่องว่างหน้าหลัง[cite: 8]
+
+        products.forEach(product => {
+            const title = product.querySelector('h6').textContent.toLowerCase();
+            // ค้นหา div คอลัมน์ที่หุ้มสินค้าชิ้นนั้นอยู่[cite: 8]
+            const productColumn = product.closest('.col-lg-4') || product.parentElement;
+
+            if (title.includes(filter)) {
+                productColumn.style.setProperty('display', 'block', 'important'); // สั่งให้แสดงผล[cite: 8]
+            } else {
+                productColumn.style.setProperty('display', 'none', 'important'); // สั่งให้ซ่อน[cite: 8]
+            }
+        });
+    }
+
+    if (searchButton && searchInput) {
+        searchButton.onclick = performSearch;
+        searchInput.onkeyup = (e) => { if (e.key === 'Enter') performSearch(); };
+    }
+});
+
+// ฟังก์ชันสำหรับเพิ่มสินค้าลงตะกร้า
+function addToCart(name, price, image) {
+    // 1. ดึงข้อมูลตะกร้าเดิมที่มีอยู่ (ถ้าไม่มีให้สร้างอาร์เรย์ว่าง)
+    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+
+    // 2. ตรวจสอบว่ามีสินค้านี้ในตะกร้าหรือยัง
+    let existingItem = cart.find(item => item.name === name);
+
+    if (existingItem) {
+        existingItem.quantity += 1; // ถ้ามีแล้วให้เพิ่มจำนวน
+    } else {
+        cart.push({ name, price, image, quantity: 1 }); // ถ้ายังไม่มีให้เพิ่มใหม่
+    }
+
+    // 3. บันทึกลง LocalStorage
+    localStorage.setItem('shoppingCart', JSON.stringify(cart));
+    
+    alert('เพิ่มสินค้าลงตะกร้าเรียบร้อยแล้ว!');
+    updateCartBadge(); // อัปเดตตัวเลขบนไอคอนตะกร้า[cite: 1, 8]
+}
+
+// ผูกเหตุการณ์คลิกกับปุ่ม Add to Cart ทุกปุ่ม
+document.querySelectorAll('.btn-sm.text-dark.p-0').forEach((btn, index) => {
+    if (btn.innerText.includes('Add To Cart')) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // ดึงข้อมูลจาก Card สินค้า
+            const productCard = this.closest('.product-item');
+            const name = productCard.querySelector('h6').innerText;
+            const price = productCard.querySelector('.d-flex h6').innerText;
+            const image = productCard.querySelector('img').getAttribute('src');
+            
+            addToCart(name, price, image);
+        });
+    }
+});
+
+// ฟังก์ชันอัปเดตตัวเลขตะกร้าด้านบน (Topbar)
+function updateCartBadge() {
+    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    document.querySelectorAll('.badge').forEach(badge => {
+        if (badge.previousElementSibling.classList.contains('fa-shopping-cart')) {
+            badge.innerText = count; // เปลี่ยนเลข 0 เป็นจำนวนจริง[cite: 1, 8]
+        }
+    });
+}
+
+// เรียกใช้เมื่อโหลดหน้าเว็บ
+updateCartBadge();
+</script>
+
     
 </body>
 

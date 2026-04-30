@@ -1,24 +1,18 @@
 [
-    {
-        "id": 1,
-        "name": "Colorful Stylish Shirt",
-        "image": "img/product-1.jpg",
-        "price": 150,
-        "quantity": 1,
-        "total": 150,
-        "category": "Shirts",
-        "description": "Bright, comfortable cotton shirt suitable for casual wear."
-    },
-    {
-        "id": 2,
-        "name": "Casual Denim Jacket",
-        "image": "img/product-2.jpg",
-        "price": 220,
-        "quantity": 1,
-        "total": 220,
-        "category": "Jackets",
-        "description": "Classic denim jacket with a modern slim fit."
-    },
+  {
+    "id": 1,
+    "name": "Colorful Woman Shirt",
+    "category": "Shirts",
+    "price": 123.00,
+    "image": "img/product-1.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Stylish Jacket",
+    "category": "Jackets",
+    "price": 250.00,
+    "image": "img/product-2.jpg"
+  },
     {
         "id": 3,
         "name": "Classic White Tee",

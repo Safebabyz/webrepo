@@ -303,20 +303,74 @@
      * filterProducts(searchTerm, category)
      * - Use originalProducts (full list) as the source so repeated searches work correctly.
      */
-    function filterProducts(searchTerm, category) {
-        const term = (searchTerm || '').trim().toLowerCase();
-        const cat = (category || 'All').trim().toLowerCase();
+   /**
+ * filterProducts(searchTerm, category)
+ * ใช้ข้อมูลจาก originalProducts (ต้นฉบับ) เพื่อให้การค้นหาใหม่เริ่มจากรายการทั้งหมดเสมอ
+ */
+function filterProducts(searchTerm, category) {
+    const term = (searchTerm || '').trim().toLowerCase();
+    const cat = (category || 'All').trim().toLowerCase();
 
-        if (!Array.isArray(originalProducts)) return [];
+    if (!Array.isArray(originalProducts)) return [];
 
-        return originalProducts.filter(product => {
-            if (!product || typeof product.name !== 'string') return false;
-            const nameMatches = term === '' || product.name.toLowerCase().includes(term);
-            const categoryMatches = cat === 'all' ||
-                (typeof product.category === 'string' && product.category.toLowerCase() === cat);
-            return nameMatches && categoryMatches;
-        });
+    return originalProducts.filter(product => {
+        if (!product || typeof product.name !== 'string') return false;
+
+        // Logic 1: ค้นหาจากชื่อสินค้า
+        const nameMatches = term === '' || product.name.toLowerCase().includes(term);
+
+        // Logic 2: ค้นหาจากหมวดหมู่ (ถ้าเป็น 'all' ให้ผ่านทุกชิ้น)
+        const productCategory = (product.category || '').toLowerCase();
+        const categoryMatches = cat === 'all' || productCategory === cat;
+
+        return nameMatches && categoryMatches; // ต้องตรงทั้งสองอย่าง
+    });
+}
+
+/**
+ * renderUI
+ * ปรับปรุงการสร้าง HTML ให้มี class 'product-item' เพื่อให้ระบบ Add to Cart ทำงานต่อได้[cite: 8]
+ */
+function renderUI(products) {
+    const container = document.getElementById('product-container') ||
+                      document.querySelector('.col-lg-9 .row.pb-3');
+
+    if (!container) return;
+
+    container.innerHTML = ''; // ล้างหน้าจอ[cite: 8]
+
+    if (products.length === 0) {
+        container.innerHTML = '<div class="col-12"><p class="text-muted text-center py-5">No products available.</p></div>';
+        return;
     }
+
+    products.forEach(p => {
+        const col = document.createElement('div');
+        col.className = 'col-lg-4 col-md-6 col-sm-12 pb-1';
+        
+        // ใส่ข้อมูลสินค้าลงใน Template[cite: 8]
+        col.innerHTML = `
+            <div class="card product-item border-0 mb-4" data-id="${p.id}">
+                <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                    <img class="img-fluid w-100" src="${p.image || 'img/product-1.jpg'}" alt="${p.name}">
+                </div>
+                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                    <h6 class="text-truncate mb-3">${p.name}</h6>
+                    <div class="d-flex justify-content-center">
+                        <h6>$${Number(p.price).toFixed(2)}</h6>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between bg-light border">
+                    <a href="#" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                    <button class="btn btn-sm text-dark p-0 add-to-cart" data-id="${p.id}">
+                        <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(col);
+    });
+}
 
     /**
      * setupSearchAndFilters
@@ -391,6 +445,7 @@
             });
         }
     }
+    
 
     // Automatically request products when the DOM is ready.
     document.addEventListener('DOMContentLoaded', () => {
@@ -405,5 +460,134 @@
         });
     });
     
+// switch to array-based cart (each item: { id, name, price, quantity, ... })
+let cart = [];
+
+/**
+ * addToCart(productID)
+ * - Manage the in-memory array `cart`.
+ * - Use Array.prototype.find() to see if product already in cart:
+ *     - if found -> increment its quantity
+ *     - if not found -> locate product in allProducts, clone it, set quantity=1 and push
+ * - After updating call saveToLocalStorage() and updateCartUI()
+ *
+ * @param {number|string} productID
+ */
+function addToCart(productID) {
+    const id = Number(productID);
+    if (Number.isNaN(id)) {
+        console.warn('addToCart: invalid productID', productID);
+        return;
+    }
+
+    // Try to find existing cart entry
+    const existing = cart.find(item => Number(item.id) === id);
+
+    if (existing) {
+        // Increment quantity for existing cart item
+        existing.quantity = (existing.quantity || 0) + 1;
+    } else {
+        // Find product definition from allProducts (source dataset)
+        const product = Array.isArray(allProducts) ? allProducts.find(p => Number(p.id) === id) : null;
+        if (!product) {
+            console.warn('addToCart: product not found in allProducts', id);
+            return;
+        }
+
+        // Clone the product object (avoid mutating source) and ensure a quantity field
+        const item = Object.assign({}, product);
+        item.quantity = item.quantity && Number(item.quantity) > 0 ? Number(item.quantity) : 1;
+
+        cart.push(item);
+    }
+
+    // Persist and refresh UI
+    if (typeof saveToLocalStorage === 'function') saveToLocalStorage();
+    if (typeof updateCartUI === 'function') updateCartUI();
+}
+
+/**
+ * handleCatalogClick(e)
+ * - Event delegation handler attached to the parent #catalog.
+ * - Looks for a clicked element (or its ancestor) with class .add-to-cart,
+ *   reads its data-id attribute, and calls addToCart().
+ */
+function handleCatalogClick(e) {
+    // Find the nearest ancestor (or self) with the .add-to-cart class
+    const btn = e.target.closest && e.target.closest('.add-to-cart');
+    if (!btn) return; // click wasn't on an add-to-cart button
+
+    // Read the product id from data-id attribute
+    // Supports both data-id and dataset.id
+    const rawId = btn.getAttribute('data-id') ?? btn.dataset?.id;
+    if (!rawId) {
+        console.warn('.add-to-cart clicked but no data-id found', btn);
+        return;
+    }
+
+    const productId = parseInt(rawId, 10);
+    if (Number.isNaN(productId)) {
+        console.warn('Invalid product id on .add-to-cart:', rawId);
+        return;
+    }
+
+    // Optionally read quantity from data-qty attribute or button dataset
+    const rawQty = btn.getAttribute('data-qty') ?? btn.dataset?.qty;
+    const qty = rawQty ? Math.max(1, parseInt(rawQty, 10) || 1) : 1;
+
+    // Update cart
+    addToCart(productId, qty);
+}
+
+/**
+ * wireCatalogDelegation()
+ * - Attaches a single click listener to #catalog that delegates to .add-to-cart buttons.
+ * - Safe to call multiple times (will remove prior listener first).
+ */
+function wireCatalogDelegation() {
+    const parent = document.getElementById('catalog');
+    if (!parent) {
+        console.warn('wireCatalogDelegation: #catalog not found in DOM');
+        return;
+    }
+    // Remove old listener if present (avoid duplicate handlers)
+    parent.removeEventListener('click', handleCatalogClick);
+    parent.addEventListener('click', handleCatalogClick);
+}
+
+// Example: update a badge UI when cart changes (optional)
+window.addEventListener('cart:updated', (e) => {
+    const badge = document.getElementById('cart-count');
+    if (!badge) return;
+    // Sum quantities to show total items
+    const totalItems = Object.values(e.detail.cart).reduce((s, q) => s + q, 0);
+    badge.textContent = String(totalItems);
+});
+
+// Call wiring after DOM is ready
+document.addEventListener('DOMContentLoaded', wireCatalogDelegation);
+
 })(jQuery);
+// ฟังก์ชันสำหรับอัปเดตจำนวนสินค้าในตะกร้า
+function updateCartBadge() {
+    // 1. ดึงข้อมูลสินค้าจาก LocalStorage
+    let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+    
+    // 2. คำนวณจำนวนชิ้นทั้งหมด (รวม quantity ของทุกรายการ)[cite: 1, 8]
+    const totalCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
+    
+    // 3. นำตัวเลขไปแสดงผลในคลาส .badge ที่อยู่คู่กับไอคอนตะกร้า[cite: 4, 8]
+    $('.fa-shopping-cart').next('.badge').text(totalCount);
+}
+
+// เรียกใช้งานฟังก์ชันทันทีเมื่อโหลดหน้าเว็บเพื่อให้เลขแสดงผลทุกหน้า[cite: 8]
+updateCartBadge();
+
+// ส่งออกฟังก์ชันไปยัง window เพื่อให้ไฟล์ HTML เรียกใช้ได้เมื่อมีการลบสินค้า
+window.updateCartBadge = updateCartBadge;
+
+
+
+
+
 

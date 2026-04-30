@@ -65,27 +65,29 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
-                                <i class="fa fa-search"></i>
-                            </span>
-                        </div>
-                    </div>
-                </form>
+                <form action="shop.html" method="GET"> <!-- ระบุให้ส่งค่าไปที่หน้า shop.html -->
+    <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Search for products">
+        <div class="input-group-append">
+            <!-- เปลี่ยนจาก span เป็น button เพื่อให้คลิกได้ -->
+            <button type="submit" class="input-group-text bg-transparent text-primary" style="border: 1px solid #ced4da; border-left: none;">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+</form>
             </div>
-            <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
-                    <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-                <a href="" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-            </div>
+           <div class="col-lg-3 col-6 text-right">
+    <a href="" class="btn border">
+        <i class="fas fa-heart text-primary"></i>
+        <span class="badge">0</span>
+    </a>
+    <a href="cart.html" class="btn border">
+        <i class="fas fa-shopping-cart text-primary"></i>
+        <!-- ตรวจสอบว่ามีคลาส badge อยู่ตรงนี้[cite: 1, 4, 8] -->
+        <span class="badge" id="cart-badge">0</span> 
+    </a>
+</div>
         </div>
     </div>
     <!-- Topbar End -->
