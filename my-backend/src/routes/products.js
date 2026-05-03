@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/products');
+const productsController = require('../controllers/products');
 
-// กำหนด Path หลัก
-router.get('/', productController.getProducts);
+// Route: GET /api/products?category=Shirts
+router.get('/', productsController.getProducts);
 
 module.exports = router;

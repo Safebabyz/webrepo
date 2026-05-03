@@ -1,12 +1,30 @@
 const productService = require('../services/products');
 
-const getProducts = (req, res) => {
+/**
+ * Controller: GET /api/products
+ * - อ่าน query parameter ?category=...
+ * - เรียก service ที่เหมาะสมและส่ง JSON response { status, data }
+ */
+async function getProducts(req, res) {
     try {
-        const products = productService.getAllProducts();
-        res.status(200).json(products); // ส่งข้อมูลกลับเป็น JSON
+        const category = req.query.category;
+        let result;
+        if (category) {
+            result = await productService.getProductsByCategory(category);
+        } else {
+            result = await productService.getAllProducts();
+        }
+
+        return res.status(200).json({
+            status: "Success",
+            data: result
+        });
     } catch (error) {
-        res.status(500).json({ message: "Error", error: error.message });
+        return res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
     }
-};
+}
 
 module.exports = { getProducts };

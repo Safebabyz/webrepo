@@ -1,13 +1,12 @@
 const express = require('express');
-const app = express();
-const productRoutes = require('./routes/products');
+const productsRouter = require('./routes/products');
 
+const app = express();
 app.use(express.json());
 
-// ใช้งาน Route ที่เราสร้างไว้
-app.use('/api/products', productRoutes);
+// mount API
+app.use('/api/products', productsRouter);
 
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}/api/products`);
-});
+// เริ่มเซิร์ฟเวอร์ (ตัวอย่าง)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`API listening on http://localhost:${PORT}`));
