@@ -3,7 +3,7 @@ const path = require('path');
 
 // ชื่อไฟล์ JSON ที่เก็บข้อมูลสินค้า (ปรับตามโครงสร้างโปรเจกต์ของคุณ)
 const DATA_FILE = path.join(__dirname, '../../data/products.json');
-
+console.log("Path:", DATA_FILE);
 /**
  * โหลดไฟล์ products.json และแปลงเป็น Array
  */
