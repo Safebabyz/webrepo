@@ -585,6 +585,63 @@ updateCartBadge();
 
 // ส่งออกฟังก์ชันไปยัง window เพื่อให้ไฟล์ HTML เรียกใช้ได้เมื่อมีการลบสินค้า
 window.updateCartBadge = updateCartBadge;
+// --- ส่วนที่เพิ่มใหม่สำหรับระบบ Register ---
+
+/**
+ * validateRegister(name, email, password)
+ * ตรวจสอบเงื่อนไขตาม Logic: ยาว >= 8, มีตัวพิมพ์ใหญ่ 1, มีอักขระพิเศษ 1
+ */
+function validateRegister(name, email, password) {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+
+    if (!name || !email || !password) {
+        alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+        return false;
+    }
+
+    if (!passwordRegex.test(password)) {
+        alert("รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร, มีตัวพิมพ์ใหญ่ 1 ตัว และอักขระพิเศษ 1 ตัว");
+        return false;
+    }
+    return true;
+}
+
+// ฟังก์ชันสำหรับส่งข้อมูลสมัครสมาชิก
+async function handleRegister(e) {
+    e.preventDefault();
+
+    const name = $('#reg-name').val();
+    const email = $('#reg-email').val();
+    const password = $('#reg-password').val();
+
+    // 1. ตรวจสอบรหัสผ่านที่หน้าบ้านก่อน (Frontend Check)
+    if (!validateRegister(name, email, password)) return;
+
+    try {
+        const response = await fetch('http://localhost:3000/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("ลงทะเบียนสำเร็จ!");
+            window.location.href = 'login.html'; // ส่งไปหน้า Login เมื่อสำเร็จ
+        } else {
+            alert("การลงทะเบียนล้มเหลว: " + result.message); // เช่น อีเมลซ้ำ (Backend Check)
+        }
+    } catch (error) {
+        console.error("Register Error:", error);
+        alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+    }
+}
+
+// เชื่อมโยงเหตุการณ์กับฟอร์มสมัครสมาชิก (ถ้ามีฟอร์มในหน้านั้น)
+$(document).ready(function() {
+    $('#register-form').on('submit', handleRegister);
+});
 
 
 

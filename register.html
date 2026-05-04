@@ -1,0 +1,43 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - EShopper</title>
+    <link href="css/style.css" rel="stylesheet">
+    <!-- ใส่ CSS Bootstrap และ Font Awesome เหมือนหน้าอื่นๆ -->
+</head>
+<body>
+    <div class="container-fluid pt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="bg-light p-30 mb-5">
+                    <h2 class="section-title position-relative text-uppercase mb-4"><span class="bg-secondary pr-3">Register</span></h2>
+                    <!-- สำคัญ: ID ต้องตรงกับ handleRegister ใน main.js -->
+                    <form id="register-form">
+                        <div class="control-group">
+                            <input type="text" class="form-control" id="reg-name" placeholder="Full Name" required />
+                        </div>
+                        <div class="control-group mt-3">
+                            <input type="email" class="form-control" id="reg-email" placeholder="Email Address" required />
+                        </div>
+                        <div class="control-group mt-3">
+                            <input type="password" class="form-control" id="reg-password" placeholder="Password (8+ chars, 1 Upper, 1 Special)" required />
+                        </div>
+                        <div class="mt-4">
+                            <button class="btn btn-primary py-2 px-4 btn-block" type="submit">Register</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="login.html">Already have an account? Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="js/main.js"></script> <!-- เรียกใช้ main.js ที่มีฟังก์ชัน handleRegister -->
+</body>
+</html>
