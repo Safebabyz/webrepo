@@ -87,5 +87,54 @@ async function login(req, res) {
     return res.status(500).json({ status: 'Fail', message: 'Internal server error.' });
   }
 }
+/**
+ * POST /api/register
+ * - รับชื่อ, อีเมล (username), และรหัสผ่าน
+ * - ตรวจสอบเงื่อนไขรหัสผ่าน: ยาว >= 8, มีพิมพ์ใหญ่, มีอักขระพิเศษ
+ * - ตรวจสอบอีเมลซ้ำในระบบ
+ */
+async function register(req, res) {
+  try {
+    const { name, email, password } = req.body || {};
 
-module.exports = { login };
+    // 1. ตรวจสอบข้อมูลเบื้องต้น
+    if (!name || !email || !password) {
+      return res.status(400).json({ status: 'Fail', message: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
+    }
+
+    // 2. ตรวจสอบเงื่อนไขรหัสผ่าน (เพิ่มความปลอดภัยที่ Backend อีกชั้น)
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ 
+        status: 'Fail', 
+        message: 'รหัสผ่านต้องยาว 8 ตัวขึ้นไป, มีตัวพิมพ์ใหญ่ และอักขระพิเศษอย่างน้อย 1 ตัว' 
+      });
+    }
+
+    // 3. ตรวจสอบอีเมลซ้ำ (เรียกใช้ service ที่มีอยู่)
+    const existingUser = await usersService.getUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ status: 'Fail', message: 'อีเมลนี้ถูกใช้งานแล้ว' });
+    }
+
+    // 4. บันทึกผู้ใช้ใหม่ (แนะนำให้ Hash รหัสผ่านก่อนบันทึก)
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await usersService.createUser({ 
+      name, 
+      email, 
+      password: hashedPassword 
+    });
+
+    return res.status(201).json({ 
+      status: 'Success', 
+      message: 'ลงทะเบียนสำเร็จ', 
+      data: { name: newUser.name, email: newUser.email } 
+    });
+
+  } catch (err) {
+    console.error('Register error:', err);
+    return res.status(500).json({ status: 'Fail', message: 'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์' });
+  }
+}
+
+module.exports = { login, register };
