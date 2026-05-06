@@ -165,9 +165,10 @@
     <!-- Page Header End -->
 
 
-    <!-- Checkout Start -->
+<!-- Checkout Start -->
     <div class="container-fluid pt-5">
         <div class="row px-xl-5">
+            <!-- ฝั่งซ้าย: แบบฟอร์มกรอกข้อมูล (กว้าง 8 ส่วน) -->
             <div class="col-lg-8">
                 <div class="mb-4">
                     <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
@@ -182,6 +183,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label>E-mail</label>
+                            <!-- จุดสำคัญ: ใส่ id="email" เพื่อให้ระบบตรวจสอบรูปแบบอีเมลได้ -->
                             <input class="form-control" type="text" id="email" placeholder="example@email.com">
                         </div>
                         <div class="col-md-6 form-group">
@@ -193,100 +195,41 @@
                             <input class="form-control" type="text" placeholder="123 Street">
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>Address Line 2</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Country</label>
-                            <select class="custom-select">
-                                <option selected>United States</option>
-                                <option>Afghanistan</option>
-                                <option>Albania</option>
-                                <option>Algeria</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 form-group">
                             <label>City</label>
                             <input class="form-control" type="text" placeholder="New York">
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>State</label>
-                            <input class="form-control" type="text" placeholder="New York">
+                            <label>Country</label>
+                            <select class="custom-select">
+                                <option selected>Thailand</option>
+                                <option>United States</option>
+                                <option>Japan</option>
+                                <option>Other</option>
+                            </select>
                         </div>
                         <div class="col-md-6 form-group">
                             <label>ZIP Code</label>
-                            <input class="form-control" type="text" placeholder="123">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="newaccount">
-                                <label class="custom-control-label" for="newaccount">Create an account</label>
-                            </div>
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="shipto">
-                                <label class="custom-control-label" for="shipto"  data-toggle="collapse" data-target="#shipping-address">Ship to different address</label>
-                            </div>
+                            <input class="form-control" type="text" placeholder="12345">
                         </div>
                     </div>
                 </div>
-                <div class="collapse mb-4" id="shipping-address">
-                    <h4 class="font-weight-semi-bold mb-4">Shipping Address</h4>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label>First Name</label>
-                            <input class="form-control" type="text" placeholder="John">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Last Name</label>
-                            <input class="form-control" type="text" placeholder="Doe">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>E-mail</label>
-                            <input class="form-control" type="text" placeholder="example@email.com">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Mobile No</label>
-                            <input class="form-control" type="text" placeholder="+123 456 789">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address Line 1</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address Line 2</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Country</label>
-                            <select class="custom-select">
-                                <option selected>United States</option>
-                                <option>Afghanistan</option>
-                                <option>Albania</option>
-                                <option>Algeria</option>
-                            </select>
-     </div> <!-- ปิดคอลัมน์ฝั่งซ้าย (col-lg-8) -->
+            </div> <!-- ปิดคอลัมน์ฝั่งซ้าย -->
 
-            <!-- เริ่มคอลัมน์ฝั่งขวา (col-lg-4) -->
+            <!-- ฝั่งขวา: สรุปราคาสินค้าและปุ่มกดยืนยัน (กว้าง 4 ส่วน) -->
             <div class="col-lg-4">
-                <!-- ส่วนที่ 1: สรุปรายการสินค้า (Order Total) -->
+                <!-- บล็อกสรุปราคา -->
                 <div class="card border-secondary mb-5">
                     <div class="card-header bg-secondary border-0">
                         <h4 class="font-weight-semi-bold m-0">Order Total</h4>
                     </div>
                     <div class="card-body">
                         <h5 class="font-weight-medium mb-3">Products</h5>
-                        
-                        <!-- จุดสำคัญ: JavaScript จะนำรายชื่อสินค้าจากตะกร้ามาใส่ตรงนี้ -->
                         <div id="order-products-list">
-                            <!-- ส่วนนี้จะว่างไว้เพื่อให้ JS เขียนข้อมูลทับ -->
+                            <!-- JavaScript จะดึงชื่อสินค้ามาแสดงตรงนี้อัตโนมัติ -->
                         </div>
-
                         <hr class="mt-0">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <!-- แสดงราคารวมสินค้า[cite: 1] -->
                             <h6 class="font-weight-medium" id="order-subtotal">$0.00</h6>
                         </div>
                         <div class="d-flex justify-content-between">
@@ -297,51 +240,31 @@
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <!-- แสดงราคาสุทธิรวมค่าส่ง $10[cite: 1] -->
                             <h5 class="font-weight-bold" id="order-total-amount">$0.00</h5>
                         </div>
                     </div>
                 </div>
 
-                <!-- ส่วนที่ 2: การชำระเงิน (Payment)[cite: 1] -->
+                <!-- บล็อกชำระเงินและปุ่มยืนยัน -->
                 <div class="card border-secondary mb-5">
                     <div class="card-header bg-secondary border-0">
                         <h4 class="font-weight-semi-bold m-0">Payment</h4>
                     </div>
                     <div class="card-body">
-                        <!-- ช่องกรอกบัตรเครดิต 16 หลักตามเงื่อนไขงาน[cite: 1] -->
                         <div class="form-group mb-4">
                             <label class="font-weight-medium">Credit Card Number (16 digits)</label>
+                            <!-- จุดสำคัญ: ใส่ id="credit-card" เพื่อตรวจสอบบัตรเครดิต -->
                             <input class="form-control" type="text" id="credit-card" placeholder="1234567890123456">
-                        </div>
-
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                                <label class="custom-control-label" for="paypal">Paypal</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                                <label class="custom-control-label" for="directcheck">Direct Check</label>
-                            </div>
-                        </div>
-                        <div class="mb-0">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                                <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
-                            </div>
                         </div>
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
-                        <!-- ปุ่มส่งข้อมูลที่ผูกกับฟังก์ชัน handleCheckout[cite: 1] -->
+                        <!-- ปุ่มยืนยันสั่งซื้อ: เรียกใช้ฟังก์ชัน handleCheckout จาก main.js -->
                         <button type="button" onclick="handleCheckout(event)" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
                     </div>
                 </div>
-            </div> <!-- ปิดคอลัมน์ฝั่งขวา[cite: 1] -->
-        </div> <!-- ปิด row[cite: 1] -->
-    </div> <!-- ปิด container-fluid[cite: 1] -->
+            </div> <!-- ปิดคอลัมน์ฝั่งขวา -->
+        </div>
+    </div>
     <!-- Checkout End -->
 
 
