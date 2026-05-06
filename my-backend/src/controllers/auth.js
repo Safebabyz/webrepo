@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const usersService = require('../services/users');
+const db = require('../database'); // นำเข้าไฟล์ที่เราสร้างในข้อ 2
 
 /**
  * Helper: constant-time comparison for hex strings
@@ -137,4 +138,41 @@ async function register(req, res) {
   }
 }
 
-module.exports = { login, register };
+// ... ฟังก์ชัน login และ register เดิมของคุณ ...
+async function checkout(req, res) {
+    try {
+        const { cart, email, creditCard } = req.body;
+
+        // 1. ตรวจสอบความถูกต้อง (Validation)
+        if (!email || creditCard.length !== 16) {
+            throw new Error("ข้อมูลไม่ถูกต้อง หรือบัตรเครดิตไม่ครบ 16 หลัก");
+        }
+
+        // 2. คำนวณราคาสุทธิ (บวกค่าส่ง $10)
+        const total = cart.reduce((sum, item) => {
+            const price = parseFloat(item.price.replace(/[$,]/g, ''));
+            return sum + (price * item.quantity);
+        }, 0) + 10;
+
+        // 3. ใช้ SQL INSERT บันทึกลง store.db
+        const sql = `INSERT INTO orders (user_email, total_price) VALUES (?, ?)`;
+        db.run(sql, [email, total], function(err) {
+            if (err) return res.status(500).json({ status: 'Fail', message: err.message });
+
+            // เมื่อบันทึกสำเร็จ ส่ง Response กลับไป
+            return res.status(200).json({ 
+                status: 'Success', 
+                message: 'บันทึกคำสั่งซื้อเรียบร้อย!', 
+                orderId: this.lastID, // ส่งเลข Order กลับไปแสดงผล
+                total: total.toFixed(2) 
+            });
+        });
+
+    } catch (err) {
+        // ส่งสถานะ 400 เพื่อไม่ให้หน้าเว็บล้างตะกร้าสินค้า
+        return res.status(400).json({ status: 'Fail', message: err.message });
+    }
+}
+
+// แก้ไขส่วนนี้ให้มีทั้ง 3 ฟังก์ชัน[cite: 1]
+module.exports = { login, register, checkout };

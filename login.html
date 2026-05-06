@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login - EShopper</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; background:#fff; }
+    .center-wrap{min-height:80vh; display:flex; align-items:center; justify-content:center;}
+    .card{max-width:520px; width:100%; padding:30px 36px; box-shadow:0 6px 20px rgba(0,0,0,0.05); border-radius:6px;}
+    .title{font-weight:700; letter-spacing:1px; margin-bottom:18px; text-transform:uppercase;}
+    .form-control{width:100%; padding:14px 12px; border:1px solid #eee; border-radius:4px; margin-bottom:12px; box-sizing:border-box;}
+    /* ปรับสีปุ่มเป็นสีชมพู */
+    .btn-primary{
+      background: #ff69b4;
+      border: 0;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 4px;
+      width: 100%;
+      cursor: pointer;
+    }
+    .muted{color:#777;font-size:13px;text-align:center;margin-top:12px;}
+    .small-link{display:block;text-align:center;margin-top:8px;color:#999;text-decoration:none;}
+    @media (max-width:480px){ .card{padding:20px} }
+  </style>
+</head>
+<body>
+  <div class="center-wrap">
+    <div class="card" role="region" aria-labelledby="login-title">
+      <h2 id="login-title" class="title">Member Login</h2>
+
+      <form id="loginForm" autocomplete="off" novalidate>
+        <input id="email" name="email" type="email" class="form-control" placeholder="Email address" required />
+        <input id="password" name="password" type="password" class="form-control" placeholder="Password" required />
+        <button id="loginBtn" type="submit" class="btn-primary">Login</button>
+      </form>
+
+      <a href="register.html" class="small-link">ยังไม่มีบัญชี? สมัครที่นี่</a>
+      <p id="msg" class="muted" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const form = document.getElementById('loginForm');
+      const msg = document.getElementById('msg');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        msg.textContent = '';
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        if(!email || !password){ msg.textContent = 'กรุณากรอกอีเมลและรหัสผ่าน'; return; }
+
+        try {
+          const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const body = await res.json().catch(()=>({ status:'Fail', message:'Invalid response' }));
+          if(res.ok && body.status === 'Success'){
+            msg.textContent = 'เข้าสู่ระบบสำเร็จ...';
+            // redirect to shop or dashboard
+            setTimeout(()=> window.location.href = 'shop.html', 600);
+          } else {
+            msg.textContent = body.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
+          }
+        } catch(err){
+          console.error(err);
+          msg.textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -8,6 +8,6 @@ router.post('/login', authController.login);
 // 2. ส่วนที่ต้องเพิ่ม: เส้นทางสำหรับ Register
 // เมื่อมีการเรียก POST มาที่ /api/register จะไปเรียกฟังก์ชัน register ใน Controller
 // กำหนดเส้นทางสำหรับสมัครสมาชิก (POST)
-router.post('/register', authController.register); 
-
+router.post('/register', authController.register);
+router.post('/checkout', authController.checkout);
 module.exports = router;
