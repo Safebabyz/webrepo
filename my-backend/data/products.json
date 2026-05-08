@@ -1,17 +1,4 @@
 [
   { "id": 1, "name": "Classic T-Shirt", "price": 25.00, "category": "Shirts" },
-  { "id": 2, "name": "Denim Jeans", "price": 55.00, "category": "Jeans" },
-  { "id": 3, "name": "Login test pairs", "credentials": [
-      { "email": "john@example.com", "password": "password" },
-      { "email": "alice@example.com", "password": "123456" },
-      { "email": "bob@example.com", "password": "12345678" },
-      { "email": "carol@example.com", "password": "123456789" },
-      { "email": "dave@example.com", "password": "qwerty" },
-      { "email": "eve@example.com", "password": "abc123" },
-      { "email": "frank@example.com", "password": "111111" },
-      { "email": "grace@example.com", "password": "admin" },
-      { "email": "heidi@example.com", "password": "letmein" },
-      { "email": "ivan@example.com", "password": "" }
-    ]
-  }
+  { "id": 2, "name": "Denim Jeans",     "price": 55.00, "category": "Jeans"  }
 ]
